@@ -108,6 +108,16 @@
         footer a:hover {
             background: #0056b3;
         }
+
+        .image-section {
+            text-align: center;
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +126,6 @@
         <h1>MEMA</h1>
         <p>Másodfokú egyenlet megoldó app</p>
     </header>
-    
     
     <main>
         <div class="card">
@@ -148,6 +157,17 @@
             </div>
         </div>
 
+        <div class="card">
+            <h2>Hol használjuk a másodfokú egyenleteket?</h2>
+            <p>A másodfokú egyenletek számos területen alkalmazhatók, például:</p>
+            <ul>
+                <li>Fizika: mozgás egyenletek, például a szabadon eső testek mozgása</li>
+                <li>Gazdaság: profitmaximalizálás, költség- és bevételi modellek</li>
+                <li>Mérnöki tudományok: szerkezetek stabilitásának vizsgálata</li>
+                <li>Matematika: geometriai problémák megoldása, például parabola egyenletek</li>
+            </ul>
+        </div>
+
         <div class="card interactive">
             <h2>Próbáld ki!</h2>
             <p>Add meg az egyenlet együtthatóit, és nézd meg a megoldást:</p>
@@ -163,6 +183,18 @@
             <div class="card">
                 <h2>Parabola ábrázolása</h2>
                 <canvas id="quadraticChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Milyen parabola fajták vannak?</h2>
+            <p>A parabolák két fő típusa létezik:</p>
+            <ul>
+                <li><strong>Felfelé nyitott parabola:</strong> Az egyenlet formája: y = ax² + bx + c, ahol a > 0.</li>
+                <li><strong>Lefelé nyitott parabola:</strong> Az egyenlet formája: y = ax² + bx + c, ahol a < 0.</li>
+            </ul>
+            <div class="image-section">
+                <img src="parabola.png" alt="Parabola fajták">
             </div>
         </div>
     </main>
@@ -214,7 +246,7 @@
                             borderColor: 'blue',
                             borderWidth: 2,
                             fill: false,
-                            pointRadius: 0 // Nincs pont
+                            pointRadius: 0
                         },
                         {
                             label: 'Gyökök',
