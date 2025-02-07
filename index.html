@@ -4,22 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Másodfokú Egyenletek Magyarázata</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background-color: #f9f7fc;
-            color: #081968;
+            background-color: #f4f4f4;
+            color: #333;
         }
 
         header {
-            background: #003a7c;
+            background: #004080;
             color: #fff;
             padding: 1.5rem;
             text-align: center;
-            border-bottom: 4px solid #fff;
+            border-bottom: 4px solid #ddd;
         }
 
         main {
@@ -30,7 +31,7 @@
         }
 
         .card {
-            background: #079ff7;
+            background: #fff;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
@@ -42,16 +43,11 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
-        h2 {
-            color: #0000fa;
-            font-size: 1.8rem;
-        }
-
         .interactive {
-            background: #0771b8;
+            background: #e0f7ff;
             padding: 1.5rem;
             border-radius: 8px;
-            border: 1px solid #0d7daa;
+            border: 1px solid #00aaff;
             text-align: center;
         }
 
@@ -59,13 +55,13 @@
             width: 50px;
             padding: 0.5rem;
             margin: 0 0.5rem;
-            border: 1px solid #4986f8;
+            border: 1px solid #00aaff;
             border-radius: 5px;
             text-align: center;
         }
 
         button {
-            background: #003a7c;
+            background: #004080;
             color: white;
             padding: 10px;
             border: none;
@@ -75,18 +71,42 @@
         }
 
         button:hover {
-            background: #003a7c;
+            background: #002d5a;
         }
 
         .result {
             margin-top: 1.5rem;
             padding: 1rem;
-            background: #3d8ce8;
-            border: 1px solid #1a68c6;
+            background: #cce5ff;
+            border: 1px solid #007bff;
             border-radius: 8px;
             display: none;
             text-align: center;
             font-size: 1.2rem;
+            color: #004080;
+        }
+
+        footer {
+            background: #002d5a;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            background: #007bff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none; /* Eltávolítja az aláhúzást */
+        }
+
+        footer a:hover {
+            background: #0056b3;
         }
     </style>
 </head>
@@ -96,7 +116,8 @@
         <h1>MEMA</h1>
         <p>Másodfokú egyenlet megoldó app</p>
     </header>
-
+    
+    
     <main>
         <div class="card">
             <h2>Mi az a másodfokú egyenlet?</h2>
@@ -115,12 +136,12 @@
         <div class="card">
             <h2>Diszkrimináns kiszámítása</h2>
             <p>A diszkrimináns képlete:</p>
-            <p><strong>&Delta; = b<sup>2</sup> - 4ac</strong></p>
+            <p><strong>D = b<sup>2</sup> - 4ac</strong></p>
             <p>A diszkrimináns megmondja, hogy hány valós gyöke van az egyenletnek:</p>
             <ul>
-                <li><strong>&Delta; > 0:</strong> Két különböző valós gyök</li>
-                <li><strong>&Delta; = 0:</strong> Egy valós gyök (kettős gyök)</li>
-                <li><strong>&Delta; < 0:</strong> Nincs valós gyök</li>
+                <li><strong>D > 0:</strong> Két különböző valós gyök</li>
+                <li><strong>D = 0:</strong> Egy valós gyök (kettős gyök)</li>
+                <li><strong>D < 0:</strong> Nincs valós gyök</li>
             </ul>
             <div class="image-section">
                 <img src="diszkrim.png" alt="Diszkrimináns">
@@ -138,42 +159,88 @@
                 <button type="button" onclick="solveEquation()">Számítás</button>
             </form>
             <div id="result" class="result"></div>
+
+            <div class="card">
+                <h2>Parabola ábrázolása</h2>
+                <canvas id="quadraticChart"></canvas>
+            </div>
         </div>
     </main>
-
     <script>
         function solveEquation() {
             const a = parseFloat(document.getElementById('a').value);
             const b = parseFloat(document.getElementById('b').value);
             const c = parseFloat(document.getElementById('c').value);
-
-            if (isNaN(a) || isNaN(b) || isNaN(c)) {
-                alert("Kérlek adj meg érvényes számokat!");
-                return;
-            }
-
-            if (a === 0) {
-                alert("Ez nem másodfokú egyenlet! Az 'a' nem lehet 0.");
-                return;
-            }
-
-            const discriminant = b * b - 4 * a * c;
             const resultDiv = document.getElementById('result');
 
-            if (discriminant > 0) {
-                const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-                const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-                resultDiv.innerHTML = `Két különböző valós gyök: x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}`;
-            } else if (Math.abs(discriminant) < 1e-10) {
-                const x = -b / (2 * a);
-                resultDiv.innerHTML = `Egy valós gyök: x = ${x.toFixed(2)}`;
-            } else {
-                resultDiv.innerHTML = 'Nincs valós gyök (csak komplex megoldások).';
+            if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+                alert("Érvényes számokat adj meg, és az 'a' ≠ 0!");
+                return;
             }
 
+            const D = b * b - 4 * a * c;
+            let x1 = null, x2 = null;
+
+            if (D > 0) {
+                x1 = (-b + Math.sqrt(D)) / (2 * a);
+                x2 = (-b - Math.sqrt(D)) / (2 * a);
+                resultDiv.innerHTML = `Két gyök: x₁ = ${x1.toFixed(2)}, x₂ = ${x2.toFixed(2)}`;
+            } else if (D === 0) {
+                x1 = x2 = -b / (2 * a);
+                resultDiv.innerHTML = `Egy gyök: x = ${x1.toFixed(2)}`;
+            } else {
+                resultDiv.innerHTML = 'Nincs valós gyök.';
+            }
             resultDiv.style.display = 'block';
+            drawGraph(a, b, c, x1, x2);
+        }
+
+        function drawGraph(a, b, c, x1, x2) {
+            const ctx = document.getElementById('quadraticChart').getContext('2d');
+            let xValues = [], yValues = [];
+            for (let x = -10; x <= 10; x += 0.5) {
+                xValues.push(x);
+                yValues.push(a * x * x + b * x + c);
+            }
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [
+                        {
+                            label: 'Parabola',
+                            data: yValues,
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0 // Nincs pont
+                        },
+                        {
+                            label: 'Gyökök',
+                            data: [
+                                { x: x1, y: a * x1 * x1 + b * x1 + c },
+                                { x: x2, y: a * x2 * x2 + b * x2 + c }
+                            ],
+                            backgroundColor: 'red',
+                            pointRadius: 5,
+                            type: 'scatter'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'x tengely' } },
+                        y: { title: { display: true, text: 'y tengely' } }
+                    }
+                }
+            });
         }
     </script>
-
+    <footer>
+        <p>Készítette: Szabó Ákos és Simon Ádám Bence</p>
+        <a href="https://sites.google.com/view/ita-sza10b/projekt-sza10b" target="_blank">Ákos projekt oldal</a>
+        <a href="https://sites.google.com/view/ita-sb10b/projekt" target="_blank">Bence projekt oldala</a>
+    </footer>
 </body>
 </html>
